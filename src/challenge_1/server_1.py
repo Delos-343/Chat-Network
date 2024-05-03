@@ -3,8 +3,6 @@ import select
 import sys
 import threading
 import re
-from fractions import Fraction
-from ast import literal_eval
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -17,44 +15,32 @@ server.listen(100)
 
 list_of_clients = []
 
-def evaluate_expression(expression):
-    try:
-        # Using literal_eval to safely evaluate the expression
-        result = literal_eval(expression)
-        return result
-    except Exception as e:
-        print("Error evaluating expression:", e)
-        return None
-
 def clientthread(conn, addr):
     while True:
         try:
             message = conn.recv(2048).decode()
             if message:
-                # Check if the message is a mathematical expression
-                if re.match(r'^[\d\s\+\-\*\/\(\)]+$', message):
-                    result = evaluate_expression(message)
-                    if result is not None:
-                        # Send the result to all clients
-                        message_to_send = f'{message} = {result}\n'
-                        broadcast(message_to_send, conn)
-                else:
-                    print('<' + addr[0] + '>' + message)
-                    message_to_send = '<' + addr[0] + '>' + message
+                if re.match(r'^[0-9\+\-\*\/\s]+$', message):
+                    result = eval(message)
+                    message_to_send = f"{message} = {result}"
+                    print('<' + addr[0] + '>' + ' ' + message_to_send)
                     broadcast(message_to_send, conn)
+                else:
+                    print('<' + addr[0] + '>' + ' ' + message)
+                    broadcast('<' + addr[0] + '>' + ' ' + message, conn)
             else:
                 remove(conn)
         except Exception as e:
-            print("Error handling client message:", e)
-            continue
+            print("Error:", e)
+            remove(conn)
+            break
 
 def broadcast(message, connection):
     for clients in list_of_clients:
         if clients != connection:
             try:
                 clients.send(message.encode())
-            except Exception as e:
-                print("Error broadcasting message:", e)
+            except:
                 clients.close()
                 remove(clients)
 
