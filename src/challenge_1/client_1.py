@@ -14,21 +14,20 @@ def send_msg(sock):
     while True:
         data = sys.stdin.readline().strip()
         if data:
-            sock.send(data.encode())
-            sys.stdout.write('\n<Urself>')
-            sys.stdout.write(' ' + data + '\n\n')
-            sys.stdout.flush()
+          sock.send(data.encode())
+          sys.stdout.write('\n<Urself>')
+          sys.stdout.write(' ' + data + '\n\n')
+          sys.stdout.flush()
 
 def recv_msg(sock):
     while True:
         data = sock.recv(2048)
         if data:
-            sys.stdout.write(' ' + data.decode() + '\n\n<Urself> ')
-            sys.stdout.flush()
+          sys.stdout.write(' ' + data.decode() + '\n\n<Urself> ')
+          sys.stdout.flush()
 
 Thread(target=send_msg, args=(server,)).start()
 Thread(target=recv_msg, args=(server,)).start()
-
 
 while True:
   sockets_list = [server]

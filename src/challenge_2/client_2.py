@@ -10,15 +10,17 @@ server.connect((ip_address, port))
 
 def send_msg(sock):
     while True:
-        data = sys.stdin.readline().strip()
-        if data.lower() == "list":
-            sys.stdout.write("Requesting list of participants...\n")
-        sock.send(data.encode())
+      data = sys.stdin.readline().strip()
+      if data.lower() == "list":
+        sys.stdout.write("\nRequesting list of participants...\n\n")
+      sock.send(data.encode())
+      sys.stdout.flush()
 
 def recv_msg(sock):
     while True:
-        data = sock.recv(2048)
-        sys.stdout.write(data.decode() + '\n')
+      data = sock.recv(2048)
+      sys.stdout.write(data.decode() + '\n')
+      sys.stdout.flush()
 
 Thread(target=send_msg, args=(server,)).start()
 Thread(target=recv_msg, args=(server,)).start()

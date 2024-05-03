@@ -17,10 +17,12 @@ client_id_counter = 1
 
 def clientthread(conn, addr):
     global client_id_counter
-    conn.send(f"Welcome to the chat! Your ID is {client_id_counter}\n".encode())
+    conn.send(f"\n\nWelcome to the chat!\n\nYour ID is {client_id_counter}\n\n".encode())
     client_id = client_id_counter
     list_of_clients[client_id] = conn
     client_id_counter += 1
+
+    print(f'\n<{addr[0]}> Client {client_id} ~ connected')  # Log client connection with address and ID
 
     while True:
         try:
@@ -69,6 +71,7 @@ def remove(connection):
     for client_id, client_conn in list_of_clients.items():
         if client_conn == connection:
             del list_of_clients[client_id]
+            print(f'<{client_conn.getpeername()[0]}> Client {client_id} disconnected')  # Log client disconnection with address and ID
             break
 
 while True:
