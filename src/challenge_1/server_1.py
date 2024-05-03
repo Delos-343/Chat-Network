@@ -24,7 +24,7 @@ def clientthread(conn, addr):
                     result = eval(message)
                     message_to_send = f"{message} = {result}"
                     print('<' + addr[0] + '>' + ' ' + message_to_send)
-                    broadcast(message_to_send, conn)
+                    conn.send(message_to_send.encode())
                 else:
                     print('<' + addr[0] + '>' + ' ' + message)
                     broadcast('<' + addr[0] + '>' + ' ' + message, conn)

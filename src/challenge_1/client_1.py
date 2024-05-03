@@ -23,7 +23,7 @@ def recv_msg(sock):
     while True:
         data = sock.recv(2048)
         if data:
-            sys.stdout.write(' ' + data.decode() + '\n<Urself> ')
+            sys.stdout.write(' ' + data.decode() + '\n\n<Urself> ')
             sys.stdout.flush()
 
 Thread(target=send_msg, args=(server,)).start()
